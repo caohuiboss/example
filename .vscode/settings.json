@@ -1,0 +1,8 @@
+{
+    "files.autoSave": "onFocusChange",
+    "vetur.validation.template": false,
+    "editor.formatOnPaste": true,
+    "path-intellisense.mappings": {
+        "@": "${workspaceRoot}/src"
+    }
+}
