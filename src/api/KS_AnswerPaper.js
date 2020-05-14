@@ -48,5 +48,13 @@ export function UpdateTotalScore(data) {
     })
 }
 
+export function SelectUserPaper(data) {
+    return service({
+        url: 'KS_AnswerPaper/SelectUserPaper',
+        method: 'post',
+        data
+    })
+}
+
 
 
