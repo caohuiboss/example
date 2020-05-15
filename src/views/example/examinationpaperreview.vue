@@ -4,16 +4,16 @@
       <div slot="title">
         <Form ref="listQuery" :model="listQuery" inline>
           <FormItem>
-            <Input clearable placeholder="任务名称" />
+            <Input clearable placeholder="任务名称" v-model="listQuery.taskName"/>
           </FormItem>
           <FormItem>
-            <Input clearable placeholder="科室" />
+            <Input clearable placeholder="科室" v-model="listQuery.deptName"/>
           </FormItem>
           <FormItem>
-            <Input clearable placeholder="考生" />
+            <Input clearable placeholder="考生" v-model="listQuery.userName"/>
           </FormItem>
           <FormItem prop="password">
-            <Select style="width:120px" clearable placeholder="是否补考">
+            <Select style="width:120px" clearable placeholder="是否补考" v-model="listQuery.State">
               <Option
                 v-for="item in RetakeStates"
                 :value="item.value"
@@ -32,7 +32,8 @@
             <span>{{row.RetakeState === 0?'否':"是"}}</span>
           </template>
           <template slot-scope="{ row, index }" slot="action">
-            <Button type="success" size="small" @click="DetailById(row)">阅卷</Button>
+            <Button type="success" size="small" v-if="!row.ReviewUser" @click="DetailById(row)">阅卷</Button>
+            <Button type="primary" size="small" v-else @click="DetailById(row)">查看</Button>
           </template>
         </Table>
         <Spin size="large" fix v-if="listLoading"></Spin>
@@ -59,14 +60,61 @@
       mask
       scrollable
       fullscreen
-      title="等级考试-手术刀卷"
-      :closable="false"
+      :title="taskName"
     >
-      等级考试-手术刀卷
+      <Card dis-hover :style="{height:'790px',overflow:'auto'}">
+        <List border item-layout="vertical" v-if="selectTopicSelection.length">
+          <ListItem v-for="(item,index) in selectTopicSelection" :key="item.topicID">
+            <ListItem>
+              <ListItemMeta :title="index+1+'、'+item.TopicList[0].topicTitle" />
+              <div v-if="['单选题','判断题'].includes(item.TopicList[0].topicType)">
+                <RadioGroup vertical v-model="item.Reply">
+                  <Radio
+                    :key="it.ID"
+                    :label="it.topicOptions"
+                    v-for="(it) in item.TopicList[0].topic_Contents"
+                    disabled
+                  >{{it.topicOptions}}:{{it.topicValue}}</Radio>
+                </RadioGroup>
+              </div>
+              <div v-if="item.TopicList[0].topicType === '多选题'" class="Checkbox">
+                <CheckboxGroup vertical v-model="item.Reply.split(',')">
+                  <Checkbox
+                    :key="it.ID"
+                    :label="it.topicOptions"
+                    v-for="(it) in item.TopicList[0].topic_Contents"
+                    disabled
+                  >
+                    {{it.topicOptions}}:{{it.topicValue}}
+                    <div></div>
+                  </Checkbox>
+                </CheckboxGroup>
+              </div>
+              <div v-if="['填空题','简答题'].includes(item.TopicList[0].topicType)">
+                <Input
+                  type="textarea"
+                  v-model="item.Reply"
+                  disabled
+                  :autosize="{minRows: 2,maxRows: 5}"
+                />
+              </div>
+              <template slot="action">
+                <li>类型：{{item.TopicList[0].topicType}}</li>
+                <li>正确答案：{{item.TopicAnswer}}</li>
+                <li>考生答案：{{item.Reply}}</li>
+                <li>分数: {{item.TopicList[0].topicFraction}}分</li>
+                <li v-if="['简答题'].includes(item.TopicList[0].topicType)">
+                  最终分数:
+                  <Input v-model="item.AnswerGrade" style="width:100px" />
+                </li>
+                <li v-else>最终分数: {{item.AnswerGrade}}分</li>
+              </template>
+            </ListItem>
+          </ListItem>
+        </List>
+      </Card>
       <div slot="footer">
-        <Button type="primary" @click="clickSelectAnswerPaper()">搜索</Button>
-        <Button type="primary" @click="clickSelectAnswerPaper()">搜索</Button>
-        <Button type="primary" @click="clickSelectAnswerPaper()">搜索</Button>
+        <Button type="primary" @click="UpdateTotalScore()" v-if="ReviewUserName">提交阅卷</Button>
       </div>
     </Modal>
   </div>
@@ -88,7 +136,11 @@ export default {
       listLoading: true,
       listQuery: {
         pageIndex: 1,
-        pageSize: 15
+        pageSize: 15,
+        userName: "",
+        deptName: "",
+        taskName: "",
+        State: ""
       },
       modalShow: false,
       columns: [
@@ -100,18 +152,30 @@ export default {
         },
         {
           title: "试卷主题",
-          key: "age",
+          key: "taskName",
           minWidth: 300
         },
         {
+          title: "阅卷者",
+          key: "ReviewUserName",
+          width: 100,
+          align: "center"
+        },
+        {
+          title: "试卷得分",
+          key: "ReplyGrade",
+          width: 100,
+          align: "center"
+        },
+        {
           title: "考生姓名",
-          key: "name",
-          width: 180,
+          key: "UserName",
+          width: 100,
           align: "center"
         },
         {
           title: "所属科室",
-          key: "name",
+          key: "DeptName",
           width: 180,
           align: "center"
         },
@@ -134,7 +198,7 @@ export default {
           slot: "action",
           fixed: "right",
           align: "center",
-          width: 180
+          width: 120
         }
       ],
       RetakeStates: [
@@ -148,20 +212,41 @@ export default {
         }
       ],
       Total: 0,
-      tableData: []
+      tableData: [],
+      selectTopicSelection: [],
+      row: null,
+      ReviewUserName: null,
+      taskName: null
     };
   },
   created() {
     this.SelectAnswerPaper();
   },
   methods: {
+    async UpdateTotalScore() {
+      const { AnswerPaperID, RetakeState, paperID } = this.row;
+      const form = {
+        AnswerPaperID,
+        RetakeState,
+        paperID,
+        ReviewUser: 1001,
+        ks_detailcontent: this.selectTopicSelection
+      };
+      const { msg } = await UpdateTotalScore(form);
+      this.$Message.info(msg);
+      this.modalShow = false;
+    },
     async DetailById(row) {
       const { data } = await SelectAnswerPaperDetailById({
         AnswerPaperID: row.AnswerPaperID,
         RetakeState: row.RetakeState
       });
+      this.taskName = row.taskName;
+      this.row = row;
+      this.ReviewUserName = row.ReviewUserName;
+      this.selectTopicSelection = data.ks_detailcontent;
       this.modalShow = true;
-      console.log(data);
+      // console.log(data);
     },
     submit() {},
     cancel() {

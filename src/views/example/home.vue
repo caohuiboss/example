@@ -1,12 +1,15 @@
 <template>
   <div class="home">
-    <Card dis-hover>
-      
-    </Card>
+    <Card dis-hover>Home</Card>
   </div>
 </template>
 <script>
-
+export default {
+  name: "Home",
+  created() {
+    sessionStorage.setItem("userID", this.$route.query.userID || 1001);
+  }
+};
 </script>
 <style scoped>
 .home /deep/ .ivu-card-head {

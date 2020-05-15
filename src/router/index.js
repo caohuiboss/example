@@ -66,6 +66,30 @@ const routes = [
         meta:{
           title:'考试统计'
         }
+      },
+      {
+        path: '/Apply',
+        name: "Apply",
+        component: () => import('@/views/training/Apply.vue'),
+        meta: {
+          title: '制作考卷'
+        }
+      },
+      {
+        path: '/CourseWare',
+        name: "CourseWare",
+        component: () => import('@/views/training/CourseWare.vue'),
+        meta: {
+          title: '试卷管理'
+        }
+      },
+      {
+        path: '/Plan',
+        name: "Plan",
+        component: () => import('@/views/training/Plan.vue'),
+        meta: {
+          title: '考试统计'
+        }
       }
     ]
   }

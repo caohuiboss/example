@@ -118,7 +118,7 @@ export default {
       listQuery: {
         paperTitle: "",
         taskName: "",
-        Uid: 1001
+        Uid: sessionStorage.getItem("userID")
       },
       modalShow: false,
       userPaperList: [],
@@ -126,7 +126,7 @@ export default {
       paperInfo: {},
       exampleFormData: {
         AnswerPaperID: 0,
-        UserID: 0,
+        UserID: sessionStorage.getItem("userID"),
         ReplyTime: "",
         ReviewTime: "",
         ReviewUser: 0,
@@ -149,6 +149,10 @@ export default {
   },
   created() {
     this.SelectUserPaper();
+    // if (!sessionStorage.getItem("status")) {
+    //   sessionStorage.setItem("status", false);
+    //   window.location.reload();
+    // }
   },
   methods: {
     openModel(row) {
@@ -179,7 +183,7 @@ export default {
       let second = Number.isNaN(minute * 60) ? 0 : minute * 60;
       this.timer = setInterval(() => {
         if (second <= 1) {
-          this.InsertAnswerPaper()
+          this.InsertAnswerPaper();
           clearInterval(this.timer);
         }
         second--;
@@ -196,14 +200,14 @@ export default {
       clearInterval(this.timer);
       const { taskID, paperID } = this.row;
       const form = {
-        UserID: 1001,
+        UserID: sessionStorage.getItem("userID"),
         paperID,
         TaskID: taskID,
         ks_detailcontent: this.selectTopicSelection.map(item => {
           return {
             Reply: Array.isArray(item.Reply)
               ? item.Reply.join(",")
-              : item.Reply || '未填写',
+              : item.Reply || "未填写",
             TopicID: item.topicID
           };
         })

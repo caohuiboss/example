@@ -145,7 +145,7 @@ export default {
         pageSize: 15,
         taskName: "",
         DeptID: 0,
-        Uid: 1001,
+        Uid: sessionStorage.getItem('userID'),
         taskType: ""
       },
       tableData: [],
@@ -208,7 +208,7 @@ export default {
         endDate: "",
         createDate: new Date(),
         DeptIDs: "",
-        Uids: "",
+        Uids: sessionStorage.getItem('userID'),
         taskType: 0
       },
       taskTypeList: [

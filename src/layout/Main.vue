@@ -11,6 +11,7 @@
       >
         <Menu
           :active-name="activeName"
+          :open-names="['考试系统']"
           theme="dark"
           width="auto"
           :class="menuitemClasses"
@@ -147,7 +148,24 @@ export default {
         },
         {
           title: "等级培训",
-          icon: "ios-bookmarks"
+          icon: "ios-bookmarks",
+          children:[
+            {
+              path: "/Apply",
+              title: "录制题库",
+              icon: "ios-book"
+            },
+            {
+              path: "/CourseWare",
+              title: "制作考卷",
+              icon: "ios-bookmarks"
+            },
+            {
+              path: "/Plan",
+              title: "试卷管理",
+              icon: "ios-bookmarks"
+            },
+          ]
         }
       ],
       routers: new Map([["home", { path: "/home", title: "首页" }]])
