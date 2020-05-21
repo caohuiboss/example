@@ -11,7 +11,6 @@
       >
         <Menu
           :active-name="activeName"
-          :open-names="['考试系统']"
           theme="dark"
           width="auto"
           :class="menuitemClasses"
@@ -109,11 +108,11 @@ export default {
           title: "考试系统",
           icon: "md-albums",
           children: [
-            // {
-            //   path: "/home",
-            //   title: "首页",
-            //   icon: "ios-home"
-            // },
+            {
+              path: "/home",
+              title: "首页",
+              icon: "ios-home"
+            },
             {
               path: "/questionbank",
               title: "录制题库",
@@ -149,22 +148,27 @@ export default {
         {
           title: "等级培训",
           icon: "ios-bookmarks",
-          children:[
+          children: [
             {
-              path: "/Apply",
-              title: "录制题库",
-              icon: "ios-book"
+              path: "/Plan",
+              title: "培训管理",
+              icon: "ios-bookmarks"
+            },
+            {
+              path: "/Plan-",
+              title: "培训报名",
+              icon: "ios-bookmarks"
             },
             {
               path: "/CourseWare",
-              title: "制作考卷",
+              title: "课件管理",
               icon: "ios-bookmarks"
             },
             {
-              path: "/Plan",
-              title: "试卷管理",
-              icon: "ios-bookmarks"
-            },
+              path: "/Apply",
+              title: "其他",
+              icon: "ios-book"
+            }
           ]
         }
       ],
@@ -172,6 +176,7 @@ export default {
     };
   },
   created() {
+    // console.log(this.$route.meta.title)
     this.Deconstruction(this.$route);
   },
   methods: {

@@ -16,25 +16,25 @@ export function SelectPlan(data) {
     })
 }
 
-export function SelectTopicDetailByTopicID(data) {
+export function SelectPlanDetailByPlanID(data) {
     return service({
-        url: '/PX_Plan/SelectTopicDetailByTopicID',
+        url: '/PX_Plan/SelectPlanDetailByPlanID',
         method: 'post',
         data
     })
 }
 
-export function DeleteTopic(data) {
+export function DeletePlan(data) {
     return service({
-        url: '/PX_Plan/DeleteTopic',
+        url: '/PX_Plan/DeletePlan',
         method: 'post',
         data
     })
 }
 
-export function UpdateTopic(data) {
+export function UpdatePlan(data) {
     return service({
-        url: '/PX_Plan/UpdateTopic',
+        url: '/PX_Plan/UpdatePlan',
         method: 'post',
         data
     })

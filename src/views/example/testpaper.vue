@@ -478,7 +478,8 @@ export default {
       ],
       deptsTree: [],
       usersTree: [],
-      names: ""
+      names: "",
+      row: null
     };
   },
   created() {
@@ -530,7 +531,7 @@ export default {
       };
       this.usersTree = [];
       this.selectTopicSelection = [];
-      this.SelectTopic()
+      this.SelectTopic();
       this.$refs["_TopicFormData"] &&
         this.$refs["_TopicFormData"].resetFields();
     },
@@ -539,6 +540,15 @@ export default {
         if (v) {
           try {
             const Uids = [];
+            const starDate = Date.parse(new Date(this.taskFormData.starDate));
+            const endDate = Date.parse(new Date(this.taskFormData.endDate));
+            const extime = this.row.extime * 60000;
+            if (endDate < starDate + extime) {
+              this.$Message.info(
+                "请设置考试结束时间大于等于开始时间加试卷时长"
+              );
+              return;
+            }
             const usersTree = this.$refs.usersTree.getCheckedNodes();
             usersTree.forEach(item => {
               if (item.ID === item.UserID) {
@@ -552,6 +562,8 @@ export default {
             this.modalShowR = false;
           } catch (error) {
             this.$Message.error(error);
+          } finally {
+            this.SelectPaper();
           }
         } else {
           this.$Message.error("你有必填项没填写");
@@ -560,7 +572,8 @@ export default {
     },
     InsertTask(row) {
       this.modalTitleR = `发布试卷：${row.paperTitle}`;
-      this.taskFormData.paperID = row.paperID
+      this.taskFormData.paperID = row.paperID;
+      this.row = row;
       this.SelectDeptorUser();
       this.modalShowR = true;
     },
@@ -644,7 +657,7 @@ export default {
     },
     cancel() {
       this.modalShow = false;
-      this.restFormData()
+      this.restFormData();
     },
     openModel() {
       this.modalTitle = "制作试卷";

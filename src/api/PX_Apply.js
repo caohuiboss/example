@@ -39,3 +39,11 @@ export function UpdateLookState(data) {
         data
     })
 }
+
+export function UpdateApplyState(data) {
+    return service({
+        url: '/PX_Apply/UpdateApplyState',
+        method: 'post',
+        data
+    })
+}

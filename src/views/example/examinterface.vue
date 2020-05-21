@@ -22,10 +22,10 @@
               <li>考试开始时间：{{item.starDate.replace('T',' ')}}</li>
               <li>考试结束时间：{{item.endDate.replace('T',' ')}}</li>
               <li>考试时长：{{item.extime || 0}}分钟</li>
-              <li>考试状态：{{item.State === 0 ? '未考':'已考'}}</li>
+              <li>考试状态：{{item.State === 0 ? '未考':item.State === 1?"已考":'过时未考'}}</li>
             </template>
             <template slot="extra">
-              <Button @click="openModel(item)" :disabled="item.State === 1">开始考试</Button>
+              <Button @click="openModel(item)" :disabled="item.State !== 0">开始考试</Button>
             </template>
           </ListItem>
         </List>
@@ -55,7 +55,7 @@
         </span>
         <h3>{{paperInfo.paperTitle}}</h3>
         <span>
-          <Button @click="submit()">交卷</Button>
+          <Button type="primary" @click="submit()">交卷</Button>
         </span>
       </div>
       <Card dis-hover :style="{height:'850px',overflow:'auto'}">

@@ -224,7 +224,8 @@ export default {
       checkStrictly: false,
       deptsTree: [],
       usersTree: [],
-      names: ""
+      names: "",
+      row:null
     };
   },
   created() {
@@ -236,6 +237,13 @@ export default {
       this.$refs["taskFormData"].validate(async v => {
         if (v) {
           try {
+            const starDate = Date.parse(new Date(this.taskFormData.starDate));
+            const endDate = Date.parse(new Date(this.taskFormData.endDate));
+            const extime = this.row.extime * 60000;
+            if (endDate < starDate + extime) {
+              this.$Message.info('请设置考试结束时间大于等于开始时间加试卷时长');
+              return;
+            }
             const Uids = [];
             const usersTree = this.$refs.usersTree.getCheckedNodes();
             usersTree.forEach(item => {
@@ -250,6 +258,8 @@ export default {
             this.modalShowR = false;
           } catch (error) {
             this.$Message.error(error);
+          } finally {
+            this.SelectTask()
           }
         } else {
           this.$Message.error("你有必填项没填写");
@@ -277,6 +287,7 @@ export default {
         paperID
       };
       this.SelectDeptorUser();
+      this.row = row
       this.names = UserName;
       this.modalTitleR = "编辑考试任务:" + taskName;
       this.modalShowR = true;

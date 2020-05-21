@@ -105,7 +105,7 @@
                 <li>分数: {{item.TopicList[0].topicFraction}}分</li>
                 <li v-if="['简答题'].includes(item.TopicList[0].topicType)">
                   最终分数:
-                  <Input v-model="item.AnswerGrade" style="width:100px" />
+                  <InputNumber :max="item.TopicList[0].topicFraction" :min="0" :step="0.1" v-model="item.AnswerGrade"></InputNumber>
                 </li>
                 <li v-else>最终分数: {{item.AnswerGrade}}分</li>
               </template>
@@ -114,7 +114,7 @@
         </List>
       </Card>
       <div slot="footer">
-        <Button type="primary" @click="UpdateTotalScore()" v-if="ReviewUserName">提交阅卷</Button>
+        <Button type="primary" @click="UpdateTotalScore()" v-if="!ReviewUserName">提交阅卷</Button>
       </div>
     </Modal>
   </div>
@@ -187,7 +187,7 @@ export default {
         },
         {
           title: "是否补考",
-          key: "RetakeState",
+          key: "State",
           slot: "RetakeState",
           width: 120,
           align: "center"
@@ -204,11 +204,11 @@ export default {
       RetakeStates: [
         {
           label: "是",
-          value: 0
+          value: 1
         },
         {
           label: "否",
-          value: 1
+          value: 0
         }
       ],
       Total: 0,
@@ -234,6 +234,7 @@ export default {
       };
       const { msg } = await UpdateTotalScore(form);
       this.$Message.info(msg);
+      this.SelectAnswerPaper()
       this.modalShow = false;
     },
     async DetailById(row) {

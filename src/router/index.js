@@ -72,7 +72,7 @@ const routes = [
         name: "Apply",
         component: () => import('@/views/training/Apply.vue'),
         meta: {
-          title: '制作考卷'
+          title: '其他'
         }
       },
       {
@@ -80,7 +80,7 @@ const routes = [
         name: "CourseWare",
         component: () => import('@/views/training/CourseWare.vue'),
         meta: {
-          title: '试卷管理'
+          title: '课件管理'
         }
       },
       {
@@ -88,7 +88,15 @@ const routes = [
         name: "Plan",
         component: () => import('@/views/training/Plan.vue'),
         meta: {
-          title: '考试统计'
+          title: '培训管理'
+        }
+      },
+      {
+        path: '/Plan-',
+        name: "Plan-",
+        component: () => import('@/views/training/Plan-.vue'),
+        meta: {
+          title: '培训报名'
         }
       }
     ]

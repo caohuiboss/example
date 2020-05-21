@@ -1,5 +1,5 @@
 <template>
-  <div class="Apply">
+  <div class="Plan-">
     <Card :bordered="false">
       <div slot="title">
         <Form ref="listQuery" :model="listQuery" inline size="mini">
@@ -56,7 +56,7 @@ import {
 } from "@/api/PX_Plan.js";
 
 export default {
-  name: "Apply",
+  name: "Plan-",
   data() {
     return {
       listLoading: true,
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.Apply {
+.Plan- {
   .ivu-form-item {
     margin-bottom: 0px;
     vertical-align: top;
